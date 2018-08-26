@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.ColumnConstraints;
@@ -34,6 +36,7 @@ public class UIController extends Application
 	@FXML private GridPane grdMap;
 	@FXML private Label lblMinesLeft;
 	@FXML private Label lblTime;
+	@FXML private Button btnRestart;
 	private int width;
 	private int height;
 	private int mines;
@@ -52,7 +55,7 @@ public class UIController extends Application
 		ZERO
 	}
 	private HashMap<Integer, String> colors;
-	private Timer timer = new Timer();
+	private Timer timer;
 
 	/**
 	 * Handles updating the time
@@ -148,6 +151,7 @@ public class UIController extends Application
 			grdMap.getRowConstraints().add(rowConstrain);
 		}
 
+		grdMap.getChildren().clear();
 		for(int i = 0; i < width; i++)
 		{
 			for(int j = 0; j < height; j++)
@@ -162,9 +166,11 @@ public class UIController extends Application
 				grdMap.add(lbl, j, i);
 			}
 		}
+		grdMap.setDisable(false);
 
 		lblMinesLeft.textProperty().bind(minesLeft.asString());
-		lblTime.textProperty().bind(time.asString());
+		timer = new Timer();
+		lblTime.textProperty().bind(Bindings.format("%03d", time));
 		initializeListeners();
 	}
 
@@ -202,6 +208,12 @@ public class UIController extends Application
 	 */
 	private void initializeListeners()
 	{
+		btnRestart.setOnAction(e -> {
+			timer.cancel();
+			firstClick = true;
+			Platform.runLater(() -> { initializeUI(); });
+		});
+
 		ObservableList<Node> cells = grdMap.getChildren();
 		cells.forEach(n -> {
 			n.setOnMouseReleased(e -> {
@@ -238,7 +250,7 @@ public class UIController extends Application
 							if(cellVal == 0)
 							{
 								dispMap[y][x].set(" ");
-								lbl.setStyle(FONT_STR);
+								lbl.setStyle(FONT_STR + BACKGROUND_STR + "white");
 								surroundingsMethod(SurroundsMethod.REVEAL, y, x, 0);
 							}
 							else if(cellVal == 9)
@@ -248,7 +260,7 @@ public class UIController extends Application
 							else
 							{
 								dispMap[y][x].set("" + cellVal);
-								lbl.setStyle(FONT_STR + COLOR_STR + colors.get(cellVal));
+								lbl.setStyle(FONT_STR + BACKGROUND_STR + "white;" + COLOR_STR + colors.get(cellVal));
 							}
 						}
 						else if(cellVal > 0)
@@ -312,13 +324,13 @@ public class UIController extends Application
 								else if(val == 0)
 								{
 									dispMap[y + yChange][x + xChange].set(" ");
-									getLabel(y + yChange, x + xChange).setStyle(FONT_STR);
+									getLabel(y + yChange, x + xChange).setStyle(FONT_STR + BACKGROUND_STR + "white");
 									surroundingsMethod(SurroundsMethod.REVEAL, (y + yChange), (x + xChange), 0);
 								}
 								else
 								{
 									dispMap[y + yChange][x + xChange].set("" + val);
-									getLabel(y + yChange, x + xChange).setStyle(FONT_STR + COLOR_STR + colors.get(val));
+									getLabel(y + yChange, x + xChange).setStyle(FONT_STR + BACKGROUND_STR + "white;" + COLOR_STR + colors.get(val));
 								}
 							}
 						}
@@ -400,7 +412,7 @@ public class UIController extends Application
 				}
 			}
 		});
-		getLabel(yDeadMine, xDeadMine).setStyle(FONT_STR + "-fx-background-color: red");
+		getLabel(yDeadMine, xDeadMine).setStyle(FONT_STR + BACKGROUND_STR + "red");
 		grdMap.setDisable(true);
 	}
 }

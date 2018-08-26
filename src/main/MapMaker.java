@@ -111,7 +111,7 @@ public class MapMaker
 	 * @param map The map to be printed
 	 */
 	@SuppressWarnings("unused")
-	private void showMap(int[][] map)
+	private static void showMap(int[][] map)
 	{
 		for(int i = 0; i < map.length; i++)
 		{
