@@ -71,6 +71,11 @@
                   </Button>
                </children>
             </GridPane>
+            <Label fx:id="lblEndGame" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="Monospaced Bold" size="32.0" />
+               </font>
+            </Label>
          </children>
       </GridPane>
    </children>

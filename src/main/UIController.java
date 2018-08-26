@@ -36,6 +36,7 @@ public class UIController extends Application
 	@FXML private GridPane grdMap;
 	@FXML private Label lblMinesLeft;
 	@FXML private Label lblTime;
+	@FXML private Label lblEndGame;
 	@FXML private Button btnRestart;
 	private int width;
 	private int height;
@@ -166,6 +167,7 @@ public class UIController extends Application
 				grdMap.add(lbl, j, i);
 			}
 		}
+		lblEndGame.setText("");
 		grdMap.setDisable(false);
 
 		lblMinesLeft.textProperty().bind(minesLeft.asString());
@@ -383,7 +385,7 @@ public class UIController extends Application
 		// You win!
 		grdMap.setDisable(true);
 		timer.cancel();
-		System.out.println("You win!");
+		lblEndGame.setText("You win!\n\nYou cleared the minefield\nin " + time.get() + " seconds!");
 	}
 
 	/**
@@ -414,6 +416,7 @@ public class UIController extends Application
 		});
 		getLabel(yDeadMine, xDeadMine).setStyle(FONT_STR + BACKGROUND_STR + "red");
 		grdMap.setDisable(true);
+		lblEndGame.setText("Game Over!\n\nYou had " + minesLeft.get() + " mines left\nat " + time.get() + " seconds...");
 	}
 }
 
